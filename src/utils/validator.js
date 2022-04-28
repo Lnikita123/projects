@@ -14,7 +14,7 @@ const isValidTitle = function (title) {
 //  string undefined. 'undefine'.indexOf() however will return -1, as undefined is not found in the string undefine.
 
 const isValidRequestBody = function (requestBody) {
-  return Object.keys(requestBody).length > 0;
+  return Object.keys(requestBody).length > 0; 
 };
 
 const isValidObjectId = function (objectId) {

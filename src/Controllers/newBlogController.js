@@ -228,152 +228,79 @@ const deleteBlogById = async function (req, res) {
   }
 };
 
-// DELETE /blogs?queryParams - delete blogs by using specific queries or filters.
- //const deleteBlogByQuery = async function (req, res) {
-//   try {
-//     const filterQuery = { isDeleted: false, deletedAt: null };
-//     const queryParams = req.query;
+//DELETE /blogs?queryParams - delete blogs by using specific queries or filters.
+ const deleteBlogByQuery = async function (req, res) {
+  try {
+    const filterQuery = { isDeleted: false, deletedAt: null };
+    const queryParams = req.query;
 
 
     
 
-//     if (!validator.isValidRequestBody(queryParams)) {
-//       res.status(400).send({
-//         status: false,
-//         message: `No query params received. Aborting delete operation`,
-//       });
-//       return;
-//     }
+    if (!validator.isValidRequestBody(queryParams)) {
+      res.status(400).send({
+        status: false,
+        message: `No query params received. Aborting delete operation`,
+      });
+      return;
+    }
 
-//     const { authorId, category, tags, subcategory, isPublished } = queryParams;
+    const { authorId, category, tags, subcategory, isPublished } = queryParams;
 
-//     if (validator.isValid(authorId) && validator.isValidObjectId(authorId)) {
-//       filterQuery["authorId"] = authorId;
-//     }
+    if (validator.isValid(authorId) && validator.isValidObjectId(authorId)) {
+      filterQuery["authorId"] = authorId;
+    }
 
-//     if (validator.isValid(category)) {
-//       filterQuery["category"] = category.trim();
-//     }
+    if (validator.isValid(category)) {
+      filterQuery["category"] = category.trim();
+    }
 
-//     if (validator.isValid(isPublished)) {
-//       filterQuery["isPublished"] = isPublished;
-//     }
+    if (validator.isValid(isPublished)) {
+      filterQuery["isPublished"] = isPublished;
+    }
 
-//     if (validator.isValid(tags)) {
-//       const tagsArr = tags
-//         .trim()
-//         .split(",")
-//         .map((tag) => tag.trim());
-//       filterQuery["tags"] = { $all: tagsArr };
-//     }
+    if (validator.isValid(tags)) {
+      const tagsArr = tags
+        .trim()
+        .split(",")
+        .map((tag) => tag.trim());
+      filterQuery["tags"] = { $all: tagsArr };
+    }
 
-//     if (validator.isValid(subcategory)) {
-//       const subcatArr = subcategory
-//         .trim()
-//         .split(",")
-//         .map((subcat) => subcat.trim());
-//       filterQuery["subcategory"] = { $all: subcatArr };
-//     }
+    if (validator.isValid(subcategory)) {
+      const subcatArr = subcategory
+        .trim()
+        .split(",")
+        .map((subcat) => subcat.trim());
+      filterQuery["subcategory"] = { $all: subcatArr };
+    }
 
-//     const findBlogs = await blogModel.find(filterQuery);
+    const findBlogs = await blogModel.find(filterQuery);
 
-//     if (Array.isArray(findBlogs) && findBlogs.length === 0) {
-//       res
-//         .status(404)
-//         .send({ status: false, message: "No matching blogs found" });
-//       return;
-//     }
+    if (Array.isArray(findBlogs) && findBlogs.length === 0) {
+      res
+        .status(404)
+        .send({ status: false, message: "No matching blogs found" });
+      return;
+    }
 
-//     let blogToBeDeleted = [];
-//     findBlogs.map((blog) => {
-//       if (
-//         blog.authorId.toString() === authorIdFromToken &&
-//         blog.isDeleted === false
-//       ) {
-//         blogToBeDeleted.push(blog._id);
-//       }
-//     });
-
-//     if (blogToBeDeleted.length === 0) {
-//       res
-//         .status(404)
-//         .send({ status: false, message: "No blogs found for deletion." });
-//       return;
-//     }
-
-//     await blogModel.updateMany(
-//       { _id: { $in: blogToBeDeleted } },
-//       { $set: { isDeleted: true, deletedAt: new Date() } }
-//     );
-
-//     return res
-//       .status(200)
-//       .send({ status: true, message: "Blog deleted successfully" });
-//   } catch (err) {
-//     return res.status(500).send({ status: false, Error: err.message });
-//   }
-// };
-const deleteBlogByQuery = async function (req, res) {
-    try {
-        let filterQuery = { isDeleted: false, deletedAt: null};
-        let queryParams = req.query;
-        const { authorId, category, tags, subcategory } = queryParams;
-    
-        if (!validator.isValidString(authorId)) {
-          return res .status(400).send({ status: false, message: "Author id is required" });
-        }
-        if (authorId) {
-          if (!validator.isValidObjectId(authorId)) {
-            return res.status(400).send({ status: false,message: `authorId is not valid.`});
-          }
-        }
-    
-        if (!validator.isValidString(category)) {
-          return res.status(400).send({status: false,message: "Category cannot be empty while fetching."});
-        }
-    
-        if (!validator.isValidString(tags)) {
-          return res.status(400).send({status: false, message: "tags cannot be empty while fetching."});
-        }
-        if (!validator.isValidString(subcategory)) {
-          return res.status(400).send({status: false,message: "subcategory cannot be empty while fetching."});
-        }
-    
-        if (validator.isValidRequestBody(queryParams)) {
-          const { authorId, category, tags, subcategory } = queryParams;
-          if (validator.isValid(authorId) && validator.isValidObjectId(authorId)) {
-            filterQuery["authorId"] = authorId;
-          }
-          if (validator.isValid(category)) {
-            filterQuery["category"] = category.trim();
-          }
-          if (validator.isValid(tags)) {
-            const tagsArr = tags.trim().split(",").map((x) => x.trim());
-            filterQuery["tags"] = { $all: tagsArr };
-          }
-          if (validator.isValid(subcategory)) {
-            const subcatArr = subcategory.trim().split(",").map((subcat) => subcat.trim());
-            filterQuery["subcategory"] = { $all: subcatArr };
-          }
-        }
-        const blog = await blogModel.find(filterQuery);
-    
-        if (Array.isArray(blog) && blog.length === 0) {
-          return res.status(404).send({ status: false, message: "No blogs found" });
-        }
-        await blogModel.updateMany(
-                   { _id: { $in: blogToBeDeleted } },
-                   { $set: { isDeleted: true, deletedAt: new Date() } }
-                );
-
-        res.status(200).send({ status: true, message: "Deleted Successfully", data: blog });
-      } catch (error) {
-        res.status(500).send({ status: false, Error: error.message });
-      }
-    };
-    
+     let blogToBeDeleted = [];
     
 
+      await blogModel.updateMany(
+      { _id: { $in: blogToBeDeleted } },
+      { $set: { isDeleted: true, deletedAt: new Date() }, new: true }
+    );
+
+    return res
+      .status(200)
+      .send({ status: true, message: "Blog deleted successfully" });
+      
+  } catch (err) {
+      console.log(err.message)
+    return res.status(500).send({ status: false, Error: err.message });
+  }
+};
 
 
 
