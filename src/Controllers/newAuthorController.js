@@ -8,6 +8,7 @@ const createAuthor = async function (req, res) {
   try {
     // Request body verifying
     let requestBody = req.body;
+    
 
     if (!validator.isValidRequestBody(requestBody)) {
       return res
