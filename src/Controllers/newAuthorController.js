@@ -144,7 +144,7 @@ const loginAuthor = async function (req, res) {
     let token = jwt.sign({ authorId: findAuthor._id }, secretKey);
     res.header("x-api-key", token);
     return res
-      .status(200)
+      .status(201)
       .send({
         status: true,
         message: `Author login successfully`,

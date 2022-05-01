@@ -183,10 +183,11 @@ const updateDetails = async function (req, res) {
     let requestBody = req.body;
     const { title, body, tags, subcategory } = requestBody;
 
-    if (!validator.isValidRequestBody(requestBody)) {
-      return res.status(400).send({status: false, message: "Invalid request parameters. Please provide body details"});
+    if (!validator.isValidRequestBody(req.params)) {
+      return res.status(400).send({status: false, message: "Invalid request parameters. Please provide query details"});
     }
 
+    
     if (!validator.isValidObjectId(blogId)) {
       return res
         .status(400)
@@ -283,7 +284,7 @@ const updateDetails = async function (req, res) {
 const deleteBlogById = async function (req, res) {
   try {
     let authorIdFromToken = req.authorId;
-    let id = req.blogId;
+    let id = req.params.blogId;
 
     if (!validator.isValidObjectId(id)) {
       return res
@@ -307,7 +308,7 @@ const deleteBlogById = async function (req, res) {
     
     let data = await blogModel.findOne({ _id: id });
     if (data.isDeleted == false) {
-      await blogModel.findOneAndUpdate(
+      let Update = await blogModel.findOneAndUpdate(
         { _id: id },
         { isDeleted: true, deletedAt: Date() },
         { new: true }
@@ -325,7 +326,6 @@ const deleteBlogById = async function (req, res) {
     res.status(500).send({ status: false, Error: err.message });
   }
 };
-
 
 
 
