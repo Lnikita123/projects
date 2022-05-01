@@ -13,6 +13,6 @@ router.post('/blogs', middleware.loginCheck, blogController.createBlog)
 router.get('/blogs', middleware.loginCheck, blogController.getBlog)
 router.put('/blogs/:blogId', middleware.loginCheck, blogController.updateDetails)
 router.delete('/blogs/:blogId', middleware.loginCheck, blogController.deleteBlogById)
-router.delete('/blogs', middleware.loginCheck, blogController.deleteblog2)
+router.delete('/blogs', middleware.loginCheck, blogController.deleteByQuery)
 
 module.exports = router;

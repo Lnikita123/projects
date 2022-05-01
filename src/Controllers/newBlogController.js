@@ -329,7 +329,7 @@ const deleteBlogById = async function (req, res) {
 
 
 
-const deleteblog2 = async function (req, res) {
+const deleteByQuery = async function (req, res) {
   try{
       let category = req.query.category
       let authorId = req.query.authorId
@@ -392,6 +392,6 @@ module.exports = {
   getBlog,
   updateDetails,
   deleteBlogById,
-  deleteblog2
+  deleteByQuery
   
 };
