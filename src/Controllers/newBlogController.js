@@ -1,5 +1,3 @@
-// bhai ye ho gya
-
 const blogModel = require("../models/blogModel.js");
 const authorModel = require("../models/authorModel.js");
 const jwt = require("jsonwebtoken");
