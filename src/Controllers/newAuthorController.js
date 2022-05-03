@@ -102,6 +102,7 @@ const loginAuthor = async function (req, res) {
 
     //Extract params
     let { email, password } = requestBody;
+    
 
     //Validation starts -
     if (!validator.isValid(email)) {
